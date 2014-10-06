@@ -1,3 +1,3 @@
 #!/bin/sh
-export GOPATH=/home/jason/swift/go-sensu-client:/home/jason/golang/
-idea
+export GOPATH=~/swift/go-sensu-client:~/golang/
+idea &

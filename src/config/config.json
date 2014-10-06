@@ -1,10 +1,7 @@
 {
 	"client": {
-		"name": "localhost",
-		"address": "localhost",
-		"subscriptions": [
-			"test"
-		]
+		"name": "device-name",
+		"address": "localhost"
 	},
 	"rabbitmq": {
 		"host": "localhost",

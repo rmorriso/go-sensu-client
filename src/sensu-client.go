@@ -4,8 +4,9 @@ import (
 	"flag"
 	"log"
 	"os"
-	"sensu"
 	"strings"
+	"checks"
+	"sensu"
 )
 
 var configFile, configDir string
@@ -21,12 +22,14 @@ func main() {
 	settings, err := sensu.LoadConfigs(configFile, configDirs)
 	if err != nil {
 		log.Printf("Unable to load settings: %s", err)
+		flag.Usage()
 		os.Exit(1)
 	}
 
 	processes := []sensu.Processor{
 		new(sensu.Keepalive),
-		new(sensu.Subscriber),
+//		new(sensu.Subscriber),
+		new(checks.CpuStats),
 	}
 	c := sensu.NewClient(settings, processes)
 
