@@ -53,6 +53,7 @@ func LoadConfigs(configFile string, configDirs []string) (*Config, error) {
 			jsd, err := parseFile(filepath.Join(dir, f.Name()))
 			if err != nil {
 				log.Printf("Could not load %s: %s", f.Name(), err)
+				continue
 			}
 
 			err = js.Extend(jsd)
@@ -63,6 +64,9 @@ func LoadConfigs(configFile string, configDirs []string) (*Config, error) {
 	}
 
 	//Reencoding merged JSON to parse to concrete type
+	if nil == js {
+		return nil, errors.New("There was no configuration.")
+	}
 	mergedJson, err := json.Marshal(js.data)
 	if err != nil {
 		return nil, errors.New("Unable to reencode merged json")
@@ -87,12 +91,12 @@ func parseFile(filename string) (*Json, error) {
 
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return j, fmt.Errorf("File error: %v", err)
+		return nil, fmt.Errorf("File error: %v", err)
 	}
 
 	err = json.Unmarshal(file, &j.data)
 	if err != nil {
-		return j, fmt.Errorf("json error: %v", err)
+		return nil, fmt.Errorf("json error: %v", err)
 	}
 
 	return j, nil
