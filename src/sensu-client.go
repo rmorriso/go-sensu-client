@@ -30,6 +30,7 @@ func main() {
 		new(sensu.Keepalive),
 //		new(sensu.Subscriber),
 		new(checks.CpuStats),
+		new(checks.LoadStats),
 	}
 	c := sensu.NewClient(settings, processes)
 
