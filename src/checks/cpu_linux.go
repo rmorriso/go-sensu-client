@@ -5,27 +5,14 @@ import (
 	"log"
 	"strings"
 	"strconv"
-	"sensu"
 	"fmt"
-	"time"
 )
 
 // PLATFORMS
 //   Linux
 
-var cpuStatInterval = 30 * time.Second
 
-func (cpu *CpuStats) Init(q sensu.MessageQueuer, config *sensu.Config) error {
-	if err := q.ExchangeDeclare(
-		"RESULTS_QUEUE",
-		"direct",
-	); err != nil {
-		return fmt.Errorf("Exchange Declare: %s", err)
-	}
-
-	cpu.q = q
-	cpu.config = config
-	cpu.close = make(chan bool)
+func (cpu *CpuStats) setup() error {
 
 	// get the number of CPUs from: /sys/devices/system/cpu/
 	online, err := ioutil.ReadFile("/sys/devices/system/cpu/present")
@@ -52,12 +39,28 @@ func (cpu *CpuStats) Init(q sensu.MessageQueuer, config *sensu.Config) error {
 	return nil
 }
 
-func (cpu *CpuStats) Gather() {
-	cpu.cpu_freq();
-}
+func (cpu *CpuStats) createCpuFreqPayload(timestamp uint) (string, error) {
+	var payload string
+	// now inject our data
+	for i := 0; i < cpu.cpu_count; i++ {
+		cpu.frequency[i] = 0
+		// attempt to load the file
+		content, err := ioutil.ReadFile(fmt.Sprintf("/sys/devices/system/cpu/cpu%d/cpufreq/cpuinfo_cur_freq", i))
+		if nil == err {
+			// we have content!
+			cpu.frequency[i], err = strconv.Atoi(strings.Trim(string(content), "\n"))
+			if nil != err {
+				log.Printf("Failed to convert '%s' to an int", string(content))
+			}
+		} else {
+			return payload, err
+			log.Printf("Could not get CPU Freq for CPU %d: %s",i, err)
+		}
 
-func (cpu *CpuStats) cpu_freq() {
+		payload += fmt.Sprintf("cpu.frequency.current.cpu%d %d %d\n", i, cpu.frequency[i], timestamp)
+	}
 
+	return payload, nil
 }
 
 
