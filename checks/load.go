@@ -77,11 +77,8 @@ func (load *LoadStats) Stop() {
 }
 
 func (load *LoadStats) publish(result *Result) {
-	if err := load.q.Publish(
-		RESULTS_QUEUE,
-		"",
-		result.GetPayload(),
-	); err != nil {
+	err := load.q.Publish(RESULTS_QUEUE, "", result.GetPayload())
+	if err != nil {
 		log.Printf("LoadAvg.publish: %v", err)
 		return
 	}

@@ -1,12 +1,13 @@
 package checks
 
 import (
-	simplejson "github.com/bitly/go-simplejson"
-	amqp "github.com/streadway/amqp"
 	//	"fmt"
 	"encoding/json"
 	"log"
 	"time"
+
+        simplejson "github.com/bitly/go-simplejson"
+        amqp "github.com/streadway/amqp"
 )
 
 const RESULTS_QUEUE = "results"
