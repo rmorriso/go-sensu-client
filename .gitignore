@@ -1,1 +1,4 @@
-.idea/
+sensu-client
+.*.swp
+*~
+

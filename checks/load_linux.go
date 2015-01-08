@@ -1,9 +1,9 @@
 package checks
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strings"
-	"fmt"
 )
 
 // PLATFORMS

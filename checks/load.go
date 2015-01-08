@@ -1,10 +1,10 @@
 package checks
 
 import (
-	"sensu"
+	"fmt"
+	"github.com/rmorriso/sensu-client/sensu"
 	"log"
 	"time"
-	"fmt"
 )
 
 // CPU Status for Linux based machines
@@ -49,17 +49,17 @@ func (load *LoadStats) Start() {
 
 	reset := make(chan bool)
 	timer := time.AfterFunc(0, func() {
-			var err error
-			result := NewResult(clientConfig)
-			result.Output, err = load.createLoadAveragePayload(result.Executed)
-			if nil != err {
-				result.Status = 1
-				result.Output = fmt.Sprintf("Error: %s", err)
-				load.Stop() // no point in continually reporting the same error.
-			}
-			load.publish(result)
-			reset <- true
-		})
+		var err error
+		result := NewResult(clientConfig)
+		result.Output, err = load.createLoadAveragePayload(result.Executed)
+		if nil != err {
+			result.Status = 1
+			result.Output = fmt.Sprintf("Error: %s", err)
+			load.Stop() // no point in continually reporting the same error.
+		}
+		load.publish(result)
+		reset <- true
+	})
 	defer timer.Stop()
 
 	for {

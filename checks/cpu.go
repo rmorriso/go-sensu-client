@@ -1,10 +1,11 @@
 package checks
 
 import (
-	"sensu"
+	"fmt"
 	"log"
 	"time"
-	"fmt"
+
+	"github.com/rmorriso/sensu-client/sensu"
 )
 
 // CPU Status for Linux based machines
@@ -49,17 +50,17 @@ func (cpu *CpuStats) Start() {
 
 	reset := make(chan bool)
 	timer := time.AfterFunc(0, func() {
-			var err error
-			result := NewResult(clientConfig)
-			result.Output, err = cpu.createCpuFreqPayload(result.Executed)
-			if nil != err {
-				result.Status = 1
-				result.Output = fmt.Sprintf("Error: %s", err)
-				cpu.Stop() // no point in continually reporting the same error.
-			}
-			cpu.publish(result)
-			reset <- true
-		})
+		var err error
+		result := NewResult(clientConfig)
+		result.Output, err = cpu.createCpuFreqPayload(result.Executed)
+		if nil != err {
+			result.Status = 1
+			result.Output = fmt.Sprintf("Error: %s", err)
+			cpu.Stop() // no point in continually reporting the same error.
+		}
+		cpu.publish(result)
+		reset <- true
+	})
 	defer timer.Stop()
 
 	for {

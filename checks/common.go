@@ -4,23 +4,23 @@ import (
 	simplejson "github.com/bitly/go-simplejson"
 	amqp "github.com/streadway/amqp"
 	//	"fmt"
-	"time"
 	"encoding/json"
 	"log"
+	"time"
 )
 
 const RESULTS_QUEUE = "results"
 
 type Result struct {
-	Name            string `json:"name"`
-	Address         string `json:"address"`
-	Command         string `json:"command"`
-	Executed        uint `json:"executed"`
-	Status          int `json:"status"`
-	Output          string `json:"output"`
-	Duration        time.Duration `json:"duration"`
-	Timeout         int `json:"timeout"`
-	started         time.Time
+	Name     string        `json:"name"`
+	Address  string        `json:"address"`
+	Command  string        `json:"command"`
+	Executed uint          `json:"executed"`
+	Status   int           `json:"status"`
+	Output   string        `json:"output"`
+	Duration time.Duration `json:"duration"`
+	Timeout  int           `json:"timeout"`
+	started  time.Time
 }
 
 func NewResult(clientConfig *simplejson.Json) *Result {
@@ -41,9 +41,8 @@ func (result *Result) toJson() []byte {
 
 func (result *Result) GetPayload() amqp.Publishing {
 	return amqp.Publishing{
-		ContentType: "application/octet-stream",
+		ContentType:  "application/octet-stream",
 		Body:         result.toJson(),
 		DeliveryMode: amqp.Transient,
 	}
 }
-

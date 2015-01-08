@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 	"strings"
-	"checks"
-	"sensu"
+
+	"github.com/rmorriso/sensu-client/checks"
+	"github.com/rmorriso/sensu-client/sensu"
 )
 
 var configFile, configDir string
@@ -28,7 +29,7 @@ func main() {
 
 	processes := []sensu.Processor{
 		new(sensu.Keepalive),
-//		new(sensu.Subscriber),
+		//		new(sensu.Subscriber),
 		new(checks.CpuStats),
 		new(checks.LoadStats),
 	}

@@ -1,16 +1,15 @@
 package checks
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
-	"strings"
 	"strconv"
-	"fmt"
+	"strings"
 )
 
 // PLATFORMS
 //   Linux
-
 
 func (cpu *CpuStats) setup() error {
 
@@ -54,7 +53,7 @@ func (cpu *CpuStats) createCpuFreqPayload(timestamp uint) (string, error) {
 			}
 		} else {
 			return payload, err
-			log.Printf("Could not get CPU Freq for CPU %d: %s",i, err)
+			log.Printf("Could not get CPU Freq for CPU %d: %s", i, err)
 		}
 
 		payload += fmt.Sprintf("cpu.frequency.current.cpu%d %d %d\n", i, cpu.frequency[i], timestamp)
@@ -62,7 +61,6 @@ func (cpu *CpuStats) createCpuFreqPayload(timestamp uint) (string, error) {
 
 	return payload, nil
 }
-
 
 func (cpu *CpuStats) createLoadAveragePayload(timestamp uint) (string, error) {
 	var payload string
