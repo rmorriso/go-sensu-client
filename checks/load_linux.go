@@ -9,7 +9,7 @@ import (
 // PLATFORMS
 //   Linux
 
-func (load *LoadStats) createLoadAveragePayload(timestamp uint) (string, error) {
+func (load *LoadStats) CreateLoadAveragePayload(timestamp uint) (string, error) {
 	var payload string
 	content, err := ioutil.ReadFile("/proc/loadavg")
 	if nil != err {

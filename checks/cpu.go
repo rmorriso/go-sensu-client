@@ -31,10 +31,8 @@ type CpuStats struct {
 var cpuStatInterval = 30 * time.Second
 
 func (cpu *CpuStats) Init(q sensu.MessageQueuer, config *sensu.Config) error {
-	if err := q.ExchangeDeclare(
-		RESULTS_QUEUE,
-		"direct",
-	); err != nil {
+	err := q.ExchangeDeclare(RESULTS_QUEUE, "direct")
+        if err != nil {
 		return fmt.Errorf("Exchange Declare: %s", err)
 	}
 
@@ -53,7 +51,7 @@ func (cpu *CpuStats) Start() {
 		var err error
 		result := NewResult(clientConfig)
 		result.Output, err = cpu.createCpuFreqPayload(result.Executed)
-		if nil != err {
+		if err  != nil {
 			result.Status = 1
 			result.Output = fmt.Sprintf("Error: %s", err)
 			cpu.Stop() // no point in continually reporting the same error.
@@ -78,11 +76,8 @@ func (cpu *CpuStats) Stop() {
 }
 
 func (cpu *CpuStats) publish(result *Result) {
-	if err := cpu.q.Publish(
-		RESULTS_QUEUE,
-		"",
-		result.GetPayload(),
-	); err != nil {
+	err := cpu.q.Publish(RESULTS_QUEUE, "", result.GetPayload())
+	if err != nil {
 		log.Printf("CpuStats.publish: %v", err)
 		return
 	}
